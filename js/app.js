@@ -23,24 +23,24 @@ class App {
   }
 
   init() {
-    storage.incrementVisitCount();
-    this.initLucideIcons();
-    this.populateChapterSelectors();
-    this.bindNavigation();
-    this.bindChapterEvents();
-    this.bindTimerEvents();
-    this.bindAudioControls();
-    this.bindVocabEvents();
-    this.bindQuizEvents();
-    this.bindStatsEvents();
+    try { storage.incrementVisitCount(); } catch(e) { console.error(e); }
+    try { this.initLucideIcons(); } catch(e) { console.error(e); }
+    try { this.populateChapterSelectors(); } catch(e) { console.error(e); }
+    try { this.bindNavigation(); } catch(e) { console.error(e); }
+    try { this.bindChapterEvents(); } catch(e) { console.error(e); }
+    try { this.bindTimerEvents(); } catch(e) { console.error(e); }
+    try { this.bindAudioControls(); } catch(e) { console.error(e); }
+    try { this.bindVocabEvents(); } catch(e) { console.error(e); }
+    try { this.bindQuizEvents(); } catch(e) { console.error(e); }
+    try { this.bindStatsEvents(); } catch(e) { console.error(e); }
 
-    this.updateChapterUI();
-    this.renderNovelContent();
-    this.renderVocabGrid();
-    this.updateStatsUI();
+    try { this.updateChapterUI(); } catch(e) { console.error(e); }
+    try { this.renderNovelContent(); } catch(e) { console.error(e); }
+    try { this.renderVocabGrid(); } catch(e) { console.error(e); }
+    try { this.updateStatsUI(); } catch(e) { console.error(e); }
 
     // Restore bookmark position
-    this.highlightSentence(this.currentSentenceIdx);
+    try { this.highlightSentence(this.currentSentenceIdx); } catch(e) { console.error(e); }
   }
 
   initLucideIcons() {

@@ -131,11 +131,24 @@ export const storage = {
     }
   },
 
+  saveStats(statsObj) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.STATS, JSON.stringify(statsObj));
+    } catch (e) {
+      console.error('Save stats error:', e);
+    }
+  },
+
   incrementVisitCount() {
-    const stats = this.getStats();
-    stats.visitCount = (stats.visitCount || 0) + 1;
-    this.saveStats(stats);
-    return stats.visitCount;
+    try {
+      const stats = this.getStats();
+      stats.visitCount = (stats.visitCount || 0) + 1;
+      this.saveStats(stats);
+      return stats.visitCount;
+    } catch (e) {
+      console.error('Increment visit count error:', e);
+      return 1;
+    }
   },
 
   addStudyTime(seconds) {
