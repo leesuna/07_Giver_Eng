@@ -170,6 +170,10 @@ class App {
     sessionTimer.onPhaseChange = (phase) => {
       phaseTitle.innerHTML = `<i data-lucide="clock" style="color: ${phase.color};"></i> ${phase.name}`;
       phaseSub.textContent = phase.sub;
+
+      const stepBadge = document.getElementById('stitch-step-badge');
+      if (stepBadge) stepBadge.textContent = `${phase.id}/4`;
+
       this.initLucideIcons();
 
       // Auto switch view based on phase
@@ -183,6 +187,21 @@ class App {
       alert('🎉 축하합니다! 오늘의 10분 영어 학습을 모두 완료했습니다!');
       this.updateStatsUI();
     };
+
+    const nextStepBtn = document.getElementById('next-step-global-btn');
+    if (nextStepBtn) {
+      nextStepBtn.addEventListener('click', () => {
+        if (!sessionTimer.isRunning) {
+          this.startTenMinSession();
+        } else {
+          const currentId = sessionTimer.currentPhase ? sessionTimer.currentPhase.id : 1;
+          if (currentId === 1) this.switchTab('vocab-view');
+          else if (currentId === 2) this.switchTab('quiz-view');
+          else if (currentId === 3) this.switchTab('stats-view');
+          else this.switchTab('session-view');
+        }
+      });
+    }
   }
 
   startTenMinSession() {
@@ -477,7 +496,6 @@ class App {
     }
 
     filtered.forEach(async (item) => {
-      // Auto-repair cards with placeholder meaning
       let currentItem = item;
       if (item.meaning && (item.meaning.includes('편집') || item.meaning.includes('추가해보세요') || item.phonetics === '/.../')) {
         const repaired = await vocabManager.lookupWord(item.word, item.example);
@@ -487,36 +505,75 @@ class App {
         }
       }
 
+      // POS Tag inference
+      let posTag = 'WORD';
+      const wLower = currentItem.word.toLowerCase();
+      if (wLower.endsWith('ing') || wLower.endsWith('ed') || wLower.endsWith('ate') || wLower.endsWith('ize')) posTag = 'VERB';
+      else if (wLower.endsWith('ive') || wLower.endsWith('ous') || wLower.endsWith('ful') || wLower.endsWith('al') || wLower.endsWith('ic')) posTag = 'ADJ';
+      else if (wLower.endsWith('tion') || wLower.endsWith('ment') || wLower.endsWith('ness') || wLower.endsWith('ity') || wLower.endsWith('er') || wLower.endsWith('or')) posTag = 'NOUN';
+
+      // Example keyword highlighting
+      let exampleHtml = currentItem.example || '';
+      if (exampleHtml) {
+        const regex = new RegExp(`(${currentItem.word})`, 'gi');
+        exampleHtml = exampleHtml.replace(regex, `<span class="word-hl-badge">$1</span>`);
+      }
+
+      const isStarred = currentItem.status === 'mastered';
+      const starIcon = isStarred ? '★' : '☆';
+
       const card = document.createElement('div');
-      card.className = 'flashcard';
+      card.className = `flashcard ${isStarred ? 'active-stitch' : ''}`;
       card.innerHTML = `
         <div class="flashcard-inner">
           <div class="card-front">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-              <span style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700;">${currentItem.word}</span>
-              <span style="font-size: 0.8rem; color: var(--accent-cyan);">${currentItem.phonetics || '/---/'}</span>
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <span class="pos-badge">${posTag}</span>
+                <button class="star-btn ${isStarred ? 'is-active' : ''}" title="즐겨찾기">${starIcon}</button>
+              </div>
+              <div style="text-align: center; margin-top: 1rem;">
+                <h3 style="font-family: var(--font-heading); font-size: 1.7rem; font-weight: 700; color: #0f172a; margin-bottom: 0.25rem;">${currentItem.word}</h3>
+                <span style="font-size: 0.95rem; color: #64748b;">${currentItem.phonetics || '/---/'}</span>
+              </div>
             </div>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">👆 카드를 클릭하여 뜻 확인</p>
+            <div class="tap-reveal-bar">
+              👆 Tap to reveal meaning
+            </div>
           </div>
+
           <div class="card-back">
             <div>
-              <div style="font-size: 1.05rem; font-weight: 700; color: var(--accent-emerald); margin-bottom: 0.5rem;">${currentItem.meaning}</div>
-              <p style="font-size: 0.82rem; color: var(--text-secondary); font-style: italic;">"${currentItem.example || ''}"</p>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <span class="pos-badge">${posTag}</span>
+                <button class="star-btn ${isStarred ? 'is-active' : ''}">${starIcon}</button>
+              </div>
+              <div>
+                <h3 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 0.15rem;">${currentItem.meaning}</h3>
+                <p style="font-size: 0.95rem; color: #64748b; font-weight: 600; margin-bottom: 0.5rem;">${currentItem.word}</p>
+                <div class="stitch-example-box">
+                  <p style="font-style: italic; margin-bottom: 0.25rem;">"${exampleHtml}"</p>
+                </div>
+              </div>
             </div>
-            <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.5rem;">
-              <button class="btn-secondary audio-card-btn" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">🔊 발음</button>
+            <div class="tap-reveal-bar" style="background: #f8fafc; color: #64748b;">
+              📑 Tap to flip back
             </div>
           </div>
         </div>
       `;
 
       card.addEventListener('click', (e) => {
-        if (e.target.classList.contains('audio-card-btn')) {
+        const star = e.target.closest('.star-btn');
+        if (star) {
           e.stopPropagation();
-          vocabManager.playPronunciation(currentItem.word);
+          const newStatus = isStarred ? 'review' : 'mastered';
+          storage.updateWordStatus(currentItem.word, newStatus);
+          this.renderVocabGrid(filter);
           return;
         }
         card.classList.toggle('flipped');
+        vocabManager.playPronunciation(currentItem.word);
       });
 
       grid.appendChild(card);

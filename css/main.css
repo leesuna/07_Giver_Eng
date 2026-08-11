@@ -23,6 +23,19 @@
   --glow-blue: rgba(59, 130, 246, 0.25);
   --glow-emerald: rgba(16, 185, 129, 0.25);
 
+  /* Google Stitch UI Theme Tokens */
+  --stitch-indigo: #4f46e5;
+  --stitch-indigo-dark: #4338ca;
+  --stitch-indigo-light: #e0e7ff;
+  --stitch-bg: #f8fafc;
+  --stitch-card-bg: #ffffff;
+  --stitch-card-border: #e2e8f0;
+  --stitch-text: #0f172a;
+  --stitch-subtext: #64748b;
+  --stitch-pill-hl: #c7d2fe;
+  --stitch-pill-hl-text: #3730a3;
+  --stitch-gold: #f59e0b;
+
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 20px;
