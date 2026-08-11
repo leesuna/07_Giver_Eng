@@ -373,74 +373,92 @@ class App {
     this.isAutoAdvance = true;
     this.fontSizeRem = 1.15;
 
-    playPauseBtn.addEventListener('click', () => {
-      if (ttsEngine.isPlaying) {
-        ttsEngine.pause();
-        playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
-      } else if (ttsEngine.isPaused) {
-        ttsEngine.resume();
-        playPauseBtn.innerHTML = '<i data-lucide="pause"></i>';
-      } else {
+    if (playPauseBtn) {
+      playPauseBtn.addEventListener('click', () => {
+        if (ttsEngine.isPlaying) {
+          ttsEngine.pause();
+          playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
+        } else if (ttsEngine.isPaused) {
+          ttsEngine.resume();
+          playPauseBtn.innerHTML = '<i data-lucide="pause"></i>';
+        } else {
+          this.playCurrentSentenceAudio();
+        }
+        this.initLucideIcons();
+      });
+    }
+
+    if (repeatBtn) {
+      repeatBtn.addEventListener('click', () => {
         this.playCurrentSentenceAudio();
-      }
-      this.initLucideIcons();
-    });
+      });
+    }
 
-    repeatBtn.addEventListener('click', () => {
-      this.playCurrentSentenceAudio();
-    });
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        if (this.currentSentenceIdx > 0) {
+          this.currentSentenceIdx -= 1;
+          this.highlightSentence(this.currentSentenceIdx);
+          this.playCurrentSentenceAudio();
+        }
+      });
+    }
 
-    prevBtn.addEventListener('click', () => {
-      if (this.currentSentenceIdx > 0) {
-        this.currentSentenceIdx -= 1;
-        this.highlightSentence(this.currentSentenceIdx);
-        this.playCurrentSentenceAudio();
-      }
-    });
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        if (this.currentSentenceIdx < this.sentences.length - 1) {
+          this.currentSentenceIdx += 1;
+          this.highlightSentence(this.currentSentenceIdx);
+          this.playCurrentSentenceAudio();
+        }
+      });
+    }
 
-    nextBtn.addEventListener('click', () => {
-      if (this.currentSentenceIdx < this.sentences.length - 1) {
-        this.currentSentenceIdx += 1;
-        this.highlightSentence(this.currentSentenceIdx);
-        this.playCurrentSentenceAudio();
-      }
-    });
+    if (stopBtn) {
+      stopBtn.addEventListener('click', () => {
+        ttsEngine.stop();
+        if (playPauseBtn) playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
+        this.initLucideIcons();
+      });
+    }
 
-    stopBtn.addEventListener('click', () => {
-      ttsEngine.stop();
-      playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
-      this.initLucideIcons();
-    });
+    if (speedSelect) {
+      speedSelect.addEventListener('change', (e) => {
+        ttsEngine.setRate(e.target.value);
+      });
+    }
 
-    speedSelect.addEventListener('change', (e) => {
-      ttsEngine.setRate(e.target.value);
-    });
+    if (fontDecBtn) {
+      fontDecBtn.addEventListener('click', () => {
+        if (this.fontSizeRem > 0.9) {
+          this.fontSizeRem -= 0.1;
+          document.querySelectorAll('.paragraph-block').forEach(p => p.style.fontSize = `${this.fontSizeRem}rem`);
+        }
+      });
+    }
 
-    fontDecBtn.addEventListener('click', () => {
-      if (this.fontSizeRem > 0.9) {
-        this.fontSizeRem -= 0.1;
-        document.querySelectorAll('.paragraph-block').forEach(p => p.style.fontSize = `${this.fontSizeRem}rem`);
-      }
-    });
+    if (fontIncBtn) {
+      fontIncBtn.addEventListener('click', () => {
+        if (this.fontSizeRem < 1.7) {
+          this.fontSizeRem += 0.1;
+          document.querySelectorAll('.paragraph-block').forEach(p => p.style.fontSize = `${this.fontSizeRem}rem`);
+        }
+      });
+    }
 
-    fontIncBtn.addEventListener('click', () => {
-      if (this.fontSizeRem < 1.7) {
-        this.fontSizeRem += 0.1;
-        document.querySelectorAll('.paragraph-block').forEach(p => p.style.fontSize = `${this.fontSizeRem}rem`);
-      }
-    });
-
-    autoAdvanceToggle.addEventListener('click', () => {
-      this.isAutoAdvance = !this.isAutoAdvance;
-      if (this.isAutoAdvance) {
-        autoAdvanceToggle.classList.add('active');
-        autoAdvanceToggle.innerHTML = '<i data-lucide="repeat"></i> 연속 재생 ON';
-      } else {
-        autoAdvanceToggle.classList.remove('active');
-        autoAdvanceToggle.innerHTML = '<i data-lucide="square"></i> 연속 재생 OFF';
-      }
-      this.initLucideIcons();
-    });
+    if (autoAdvanceToggle) {
+      autoAdvanceToggle.addEventListener('click', () => {
+        this.isAutoAdvance = !this.isAutoAdvance;
+        if (this.isAutoAdvance) {
+          autoAdvanceToggle.classList.add('active');
+          autoAdvanceToggle.innerHTML = '<i data-lucide="repeat"></i> 연속 재생 ON';
+        } else {
+          autoAdvanceToggle.classList.remove('active');
+          autoAdvanceToggle.innerHTML = '<i data-lucide="square"></i> 연속 재생 OFF';
+        }
+        this.initLucideIcons();
+      });
+    }
 
     if (chapterLoopToggle) {
       chapterLoopToggle.addEventListener('click', () => {
@@ -521,29 +539,45 @@ class App {
 
   bindVocabEvents() {
     const modal = document.getElementById('word-modal');
-    document.getElementById('modal-close-btn').addEventListener('click', () => modal.classList.remove('active'));
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.classList.remove('active');
-    });
+    const closeBtn = document.getElementById('modal-close-btn');
+    const audioBtn = document.getElementById('modal-audio-btn');
+    const saveBtn = document.getElementById('modal-save-vocab-btn');
 
-    document.getElementById('modal-audio-btn').addEventListener('click', () => {
-      if (this.activeWordData) vocabManager.playPronunciation(this.activeWordData.word);
-    });
+    if (closeBtn && modal) {
+      closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+    }
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+      });
+    }
 
-    document.getElementById('modal-save-vocab-btn').addEventListener('click', () => {
-      if (this.activeWordData) {
-        vocabManager.saveWordToVocab(this.activeWordData);
-        alert(`'${this.activeWordData.word}' 단어가 단어장에 저장되었습니다!`);
-        modal.classList.remove('active');
-        this.renderVocabGrid();
-        this.updateStatsUI();
-      }
-    });
+    if (audioBtn) {
+      audioBtn.addEventListener('click', () => {
+        if (this.activeWordData) vocabManager.playPronunciation(this.activeWordData.word);
+      });
+    }
+
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        if (this.activeWordData) {
+          vocabManager.saveWordToVocab(this.activeWordData);
+          alert(`'${this.activeWordData.word}' 단어가 단어장에 저장되었습니다!`);
+          if (modal) modal.classList.remove('active');
+          this.renderVocabGrid();
+          this.updateStatsUI();
+        }
+      });
+    }
 
     // Filter Buttons
-    document.getElementById('filter-all-btn').addEventListener('click', () => this.renderVocabGrid('all'));
-    document.getElementById('filter-review-btn').addEventListener('click', () => this.renderVocabGrid('review'));
-    document.getElementById('filter-mastered-btn').addEventListener('click', () => this.renderVocabGrid('mastered'));
+    const filterAll = document.getElementById('filter-all-btn');
+    const filterReview = document.getElementById('filter-review-btn');
+    const filterMastered = document.getElementById('filter-mastered-btn');
+
+    if (filterAll) filterAll.addEventListener('click', () => this.renderVocabGrid('all'));
+    if (filterReview) filterReview.addEventListener('click', () => this.renderVocabGrid('review'));
+    if (filterMastered) filterMastered.addEventListener('click', () => this.renderVocabGrid('mastered'));
   }
 
   renderVocabGrid(filter = 'all') {
@@ -662,12 +696,20 @@ class App {
      Cloze Quiz Engine
    ------------------------------------------------------------- */
   bindQuizEvents() {
-    document.getElementById('submit-quiz-btn').addEventListener('click', () => this.handleQuizSubmit());
-    document.getElementById('cloze-answer-input').addEventListener('keyup', (e) => {
-      if (e.key === 'Enter') this.handleQuizSubmit();
-    });
-
+    const submitBtn = document.getElementById('submit-quiz-btn');
+    const answerInput = document.getElementById('cloze-answer-input');
+    const hintBtn = document.getElementById('hint-quiz-btn');
     const readSentenceBtn = document.getElementById('read-quiz-sentence-btn');
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', () => this.handleQuizSubmit());
+    }
+    if (answerInput) {
+      answerInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') this.handleQuizSubmit();
+      });
+    }
+
     if (readSentenceBtn) {
       readSentenceBtn.addEventListener('click', () => {
         const q = quizEngine.getCurrentQuestion();
@@ -677,22 +719,26 @@ class App {
       });
     }
 
-    document.getElementById('hint-quiz-btn').addEventListener('click', async () => {
-      const q = quizEngine.getCurrentQuestion();
-      if (q) {
-        vocabManager.playPronunciation(q.targetWord);
-        const feedback = document.getElementById('quiz-feedback-box');
-        feedback.style.display = 'block';
-        feedback.style.background = 'rgba(245, 158, 11, 0.18)';
-        feedback.style.border = '1px solid rgba(245, 158, 11, 0.4)';
-        feedback.style.color = '#fef08a';
+    if (hintBtn) {
+      hintBtn.addEventListener('click', async () => {
+        const q = quizEngine.getCurrentQuestion();
+        if (q) {
+          vocabManager.playPronunciation(q.targetWord);
+          const feedback = document.getElementById('quiz-feedback-box');
+          if (feedback) {
+            feedback.style.display = 'block';
+            feedback.style.background = 'rgba(245, 158, 11, 0.18)';
+            feedback.style.border = '1px solid rgba(245, 158, 11, 0.4)';
+            feedback.style.color = '#fef08a';
 
-        const wordInfo = await vocabManager.lookupWord(q.targetWord, q.fullText);
-        const meaningText = (wordInfo && wordInfo.meaning) ? wordInfo.meaning : '어휘 분석 중';
+            const wordInfo = await vocabManager.lookupWord(q.targetWord, q.fullText);
+            const meaningText = (wordInfo && wordInfo.meaning) ? wordInfo.meaning : '어휘 분석 중';
 
-        feedback.innerHTML = `💡 <b>힌트:</b> 첫 글자 <b>'${q.firstLetter}'</b> (${q.wordLength}글자) &nbsp;|&nbsp; 📖 <b>뜻:</b> ${meaningText}`;
-      }
-    });
+            feedback.innerHTML = `💡 <b>힌트:</b> 첫 글자 <b>'${q.firstLetter}'</b> (${q.wordLength}글자) &nbsp;|&nbsp; 📖 <b>뜻:</b> ${meaningText}`;
+          }
+        }
+      });
+    }
   }
 
   initQuizSection() {

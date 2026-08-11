@@ -80,10 +80,10 @@
   pointer-events: none;
 }
 
+.stitch-bottom-bar > div,
+.stitch-bottom-bar button,
 .stitch-bottom-bar .next-step-btn {
   pointer-events: auto;
-  width: 100%;
-  max-width: 480px;
 }
 
 .next-step-btn {
