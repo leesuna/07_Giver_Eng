@@ -128,29 +128,67 @@ class App {
    ------------------------------------------------------------- */
   bindNavigation() {
     const tabBtns = document.querySelectorAll('.tab-btn');
-    const viewSections = document.querySelectorAll('.view-section');
 
     tabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const targetTab = btn.getAttribute('data-tab');
-
-        tabBtns.forEach(b => b.classList.remove('active'));
-        viewSections.forEach(s => s.classList.remove('active'));
-
-        btn.classList.add('active');
-        const activeSec = document.getElementById(targetTab);
-        if (activeSec) activeSec.classList.add('active');
-
-        // View specific refresh callbacks
-        if (targetTab === 'vocab-view') this.renderVocabGrid();
-        if (targetTab === 'quiz-view') this.initQuizSection();
-        if (targetTab === 'stats-view') this.updateStatsUI();
+        this.switchTab(targetTab);
       });
     });
 
-    // Start 10-Min Session buttons
-    document.getElementById('start-session-btn').addEventListener('click', () => this.startTenMinSession());
-    document.getElementById('session-start-main-btn').addEventListener('click', () => this.startTenMinSession());
+    // Header Start/Stop toggle button handler
+    const startHeaderBtn = document.getElementById('start-session-btn');
+    if (startHeaderBtn) {
+      startHeaderBtn.addEventListener('click', () => {
+        if (sessionTimer.isRunning) {
+          this.stopTenMinSession();
+        } else {
+          this.startTenMinSession();
+        }
+      });
+    }
+
+    const sessionStartMainBtn = document.getElementById('session-start-main-btn');
+    if (sessionStartMainBtn) {
+      sessionStartMainBtn.addEventListener('click', () => this.startTenMinSession());
+    }
+
+    // Stop Summary Modal Confirm button
+    const stopConfirmBtn = document.getElementById('stop-modal-confirm-btn');
+    if (stopConfirmBtn) {
+      stopConfirmBtn.addEventListener('click', () => {
+        const stopModal = document.getElementById('session-stop-summary-modal');
+        if (stopModal) stopModal.classList.remove('active');
+        this.switchTab('session-view');
+      });
+    }
+  }
+
+  switchTab(tabId) {
+    // Immediately stop TTS audio when changing tabs
+    ttsEngine.stop();
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    if (playPauseBtn) {
+      playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
+      this.initLucideIcons();
+    }
+
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const viewSections = document.querySelectorAll('.view-section');
+
+    tabBtns.forEach(b => b.classList.remove('active'));
+    viewSections.forEach(s => s.classList.remove('active'));
+
+    const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const activeSec = document.getElementById(tabId);
+    if (activeSec) activeSec.classList.add('active');
+
+    // View specific refresh callbacks
+    if (tabId === 'vocab-view') this.renderVocabGrid();
+    if (tabId === 'quiz-view') this.initQuizSection();
+    if (tabId === 'stats-view') this.updateStatsUI();
   }
 
   /* -------------------------------------------------------------
@@ -183,43 +221,68 @@ class App {
     };
 
     sessionTimer.onComplete = () => {
-      alert('🎉 축하합니다! 오늘의 10분 영어 학습을 모두 완료했습니다!');
-      this.updateStatsUI();
+      this.stopTenMinSession(true);
     };
 
     const closeBtn = document.getElementById('stitch-close-session-btn');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
         if (confirm('현재 진행 중인 10분 학습 루틴을 종료하시겠습니까?')) {
-          sessionTimer.stop();
-          this.switchTab('session-view');
+          this.stopTenMinSession();
         }
       });
     }
 
+    // Global Prev Step button handler
+    const prevStepBtn = document.getElementById('prev-step-global-btn');
+    if (prevStepBtn) {
+      prevStepBtn.addEventListener('click', () => {
+        ttsEngine.stop();
+        const activeView = document.querySelector('.view-section.active');
+        const activeId = activeView ? activeView.id : 'session-view';
+
+        if (activeId === 'reader-view') this.switchTab('session-view');
+        else if (activeId === 'vocab-view') this.switchTab('reader-view');
+        else if (activeId === 'quiz-view') this.switchTab('vocab-view');
+        else if (activeId === 'stats-view') this.switchTab('quiz-view');
+        else this.switchTab('session-view');
+      });
+    }
+
+    // Global Next Step button handler
     const nextStepBtn = document.getElementById('next-step-global-btn');
     if (nextStepBtn) {
       nextStepBtn.addEventListener('click', () => {
-        if (!sessionTimer.isRunning) {
-          this.startTenMinSession();
-        } else {
-          const currentId = sessionTimer.currentPhase ? sessionTimer.currentPhase.id : 1;
-          if (currentId === 1) this.switchTab('vocab-view');
-          else if (currentId === 2) this.switchTab('quiz-view');
-          else if (currentId === 3) this.switchTab('stats-view');
-          else this.switchTab('session-view');
+        ttsEngine.stop();
+        const activeView = document.querySelector('.view-section.active');
+        const activeId = activeView ? activeView.id : 'session-view';
+
+        if (activeId === 'session-view') {
+          if (!sessionTimer.isRunning) this.startTenMinSession();
+          else this.switchTab('reader-view');
         }
+        else if (activeId === 'reader-view') this.switchTab('vocab-view');
+        else if (activeId === 'vocab-view') this.switchTab('quiz-view');
+        else if (activeId === 'quiz-view') this.switchTab('stats-view');
+        else this.switchTab('session-view');
       });
     }
   }
 
   startTenMinSession() {
     sessionTimer.start();
+
+    // Toggle header button state to STOP
+    const startHeaderBtn = document.getElementById('start-session-btn');
+    if (startHeaderBtn) {
+      startHeaderBtn.innerHTML = '⏹ 10분 학습 중지';
+      startHeaderBtn.className = 'btn-stop';
+    }
+
     this.switchTab('reader-view');
     this.playCurrentSentenceAudio();
   }
 
-  switchTab(tabId) {
     const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
     if (btn) btn.click();
   }
