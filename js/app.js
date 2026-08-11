@@ -23,6 +23,7 @@ class App {
   }
 
   init() {
+    storage.incrementVisitCount();
     this.initLucideIcons();
     this.populateChapterSelectors();
     this.bindNavigation();
@@ -281,6 +282,49 @@ class App {
 
     this.switchTab('reader-view');
     this.playCurrentSentenceAudio();
+  }
+
+  stopTenMinSession(isCompleted = false) {
+    ttsEngine.stop();
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    if (playPauseBtn) {
+      playPauseBtn.innerHTML = '<i data-lucide="play"></i>';
+      this.initLucideIcons();
+    }
+
+    const elapsedSecs = sessionTimer.elapsedSeconds || (sessionTimer.totalDuration - sessionTimer.remainingSeconds) || 0;
+    const mins = Math.floor(elapsedSecs / 60);
+    const secs = elapsedSecs % 60;
+    const formattedTime = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+    sessionTimer.stop();
+
+    // Toggle header button state back to START
+    const startHeaderBtn = document.getElementById('start-session-btn');
+    if (startHeaderBtn) {
+      startHeaderBtn.innerHTML = '<i data-lucide="play"></i> 10분 학습 시작';
+      startHeaderBtn.className = 'btn-primary';
+      this.initLucideIcons();
+    }
+
+    // Populate and open Session Stop Summary Modal
+    const stats = storage.getStats();
+    const vocabList = storage.getSavedVocab();
+
+    const stopTimeEl = document.getElementById('stop-modal-study-time');
+    if (stopTimeEl) stopTimeEl.textContent = formattedTime;
+
+    const stopVisitEl = document.getElementById('stop-modal-visit-count');
+    if (stopVisitEl) stopVisitEl.textContent = `${stats.visitCount || 1}회`;
+
+    const stopSentencesEl = document.getElementById('stop-modal-sentences');
+    if (stopSentencesEl) stopSentencesEl.textContent = `${stats.sentencesReadCount || 0}개`;
+
+    const stopVocabEl = document.getElementById('stop-modal-vocab');
+    if (stopVocabEl) stopVocabEl.textContent = `${vocabList.length}개`;
+
+    const stopModal = document.getElementById('session-stop-summary-modal');
+    if (stopModal) stopModal.classList.add('active');
   }
 
   /* -------------------------------------------------------------
@@ -723,9 +767,9 @@ class App {
           const feedback = document.getElementById('quiz-feedback-box');
           if (feedback) {
             feedback.style.display = 'block';
-            feedback.style.background = 'rgba(245, 158, 11, 0.18)';
-            feedback.style.border = '1px solid rgba(245, 158, 11, 0.4)';
-            feedback.style.color = '#fef08a';
+            feedback.style.background = '#fef3c7';
+            feedback.style.border = '1px solid #fde68a';
+            feedback.style.color = '#78350f'; // Dark Brown (진한 갈색)
 
             const wordInfo = await vocabManager.lookupWord(q.targetWord, q.fullText);
             const meaningText = (wordInfo && wordInfo.meaning) ? wordInfo.meaning : '어휘 분석 중';

@@ -94,6 +94,7 @@ export const storage = {
         quizAttemptCount: 0,
         quizCorrectCount: 0,
         streakDays: 1,
+        visitCount: 1,
         lastStudyDate: new Date().toISOString().slice(0, 10),
         dailyHistory: {}
       };
@@ -123,10 +124,18 @@ export const storage = {
         quizAttemptCount: 0,
         quizCorrectCount: 0,
         streakDays: 1,
+        visitCount: 1,
         lastStudyDate: new Date().toISOString().slice(0, 10),
         dailyHistory: {}
       };
     }
+  },
+
+  incrementVisitCount() {
+    const stats = this.getStats();
+    stats.visitCount = (stats.visitCount || 0) + 1;
+    this.saveStats(stats);
+    return stats.visitCount;
   },
 
   addStudyTime(seconds) {
