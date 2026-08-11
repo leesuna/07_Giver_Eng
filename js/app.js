@@ -168,8 +168,7 @@ class App {
     };
 
     sessionTimer.onPhaseChange = (phase) => {
-      phaseTitle.innerHTML = `<i data-lucide="clock" style="color: ${phase.color};"></i> ${phase.name}`;
-      phaseSub.textContent = phase.sub;
+      phaseTitle.textContent = `Step ${phase.id}: ${phase.name}`;
 
       const stepBadge = document.getElementById('stitch-step-badge');
       if (stepBadge) stepBadge.textContent = `${phase.id}/4`;
@@ -187,6 +186,16 @@ class App {
       alert('🎉 축하합니다! 오늘의 10분 영어 학습을 모두 완료했습니다!');
       this.updateStatsUI();
     };
+
+    const closeBtn = document.getElementById('stitch-close-session-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        if (confirm('현재 진행 중인 10분 학습 루틴을 종료하시겠습니까?')) {
+          sessionTimer.stop();
+          this.switchTab('session-view');
+        }
+      });
+    }
 
     const nextStepBtn = document.getElementById('next-step-global-btn');
     if (nextStepBtn) {
@@ -512,11 +521,16 @@ class App {
       else if (wLower.endsWith('ive') || wLower.endsWith('ous') || wLower.endsWith('ful') || wLower.endsWith('al') || wLower.endsWith('ic')) posTag = 'ADJ';
       else if (wLower.endsWith('tion') || wLower.endsWith('ment') || wLower.endsWith('ness') || wLower.endsWith('ity') || wLower.endsWith('er') || wLower.endsWith('or')) posTag = 'NOUN';
 
-      // Example keyword highlighting
-      let exampleHtml = currentItem.example || '';
-      if (exampleHtml) {
+      // Example keyword highlighting & Korean translation
+      let exampleEng = currentItem.example || '';
+      let exampleKor = currentItem.exampleTranslation || '';
+      if (exampleEng) {
         const regex = new RegExp(`(${currentItem.word})`, 'gi');
-        exampleHtml = exampleHtml.replace(regex, `<span class="word-hl-badge">$1</span>`);
+        exampleEng = exampleEng.replace(regex, `<span class="word-hl-badge">$1</span>`);
+      }
+      if (!exampleKor && currentItem.meaning) {
+        const cleanMeaning = currentItem.meaning.split(',')[0];
+        exampleKor = `문맥 속에서 '${currentItem.word}'은(는) '${cleanMeaning}'의 의미로 쓰였습니다.`;
       }
 
       const isStarred = currentItem.status === 'mastered';
@@ -533,7 +547,7 @@ class App {
                 <button class="star-btn ${isStarred ? 'is-active' : ''}" title="즐겨찾기">${starIcon}</button>
               </div>
               <div style="text-align: center; margin-top: 1rem;">
-                <h3 style="font-family: var(--font-heading); font-size: 1.7rem; font-weight: 700; color: #0f172a; margin-bottom: 0.25rem;">${currentItem.word}</h3>
+                <h3 style="font-family: var(--font-heading); font-size: 1.7rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">${currentItem.word}</h3>
                 <span style="font-size: 0.95rem; color: #64748b;">${currentItem.phonetics || '/---/'}</span>
               </div>
             </div>
@@ -544,7 +558,7 @@ class App {
 
           <div class="card-back">
             <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                 <span class="pos-badge">${posTag}</span>
                 <button class="star-btn ${isStarred ? 'is-active' : ''}">${starIcon}</button>
               </div>
@@ -552,11 +566,12 @@ class App {
                 <h3 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 0.15rem;">${currentItem.meaning}</h3>
                 <p style="font-size: 0.95rem; color: #64748b; font-weight: 600; margin-bottom: 0.5rem;">${currentItem.word}</p>
                 <div class="stitch-example-box">
-                  <p style="font-style: italic; margin-bottom: 0.25rem;">"${exampleHtml}"</p>
+                  <p style="font-style: italic; margin-bottom: 0.35rem; font-size: 0.9rem; color: #1e293b;">"${exampleEng}"</p>
+                  <p style="font-size: 0.82rem; color: #475569; font-weight: 500;">"${exampleKor}"</p>
                 </div>
               </div>
             </div>
-            <div class="tap-reveal-bar" style="background: #f8fafc; color: #64748b;">
+            <div class="tap-reveal-bar" style="background: #ffffff; color: #64748b; border-top: 1px solid #f1f5f9;">
               📑 Tap to flip back
             </div>
           </div>

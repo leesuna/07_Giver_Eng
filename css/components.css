@@ -1,44 +1,89 @@
 /* Google Stitch UI Component Styles */
 
-/* 10-Minute Daily Timer Banner */
+/* 10-Minute Daily Timer Banner (Stitch Top Step Header) */
 .timer-banner {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: var(--radius-lg);
-  padding: 1.25rem 1.5rem;
+  padding: 0.85rem 1.25rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
   position: relative;
   overflow: hidden;
 }
 
-.timer-header {
+.stitch-top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
 }
 
-.phase-info h3 {
-  font-family: var(--font-heading);
-  font-size: 1.2rem;
-  color: var(--text-primary);
+.stitch-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  transition: background 0.2s ease;
 }
 
-.phase-info p {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
+.stitch-close-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
-.timer-countdown {
+.stitch-title-group {
+  text-align: center;
+}
+
+.stitch-title-group h3 {
   font-family: var(--font-heading);
-  font-size: 2.2rem;
+  font-size: 1.2rem;
   font-weight: 800;
+  color: #0f172a;
+}
+
+.stitch-remaining-sub {
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--stitch-indigo);
-  letter-spacing: 1px;
+}
+
+.stitch-step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--stitch-indigo);
+  color: var(--stitch-indigo);
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.stitch-bottom-bar {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 90;
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.stitch-bottom-bar .next-step-btn {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 480px;
 }
 
 .progress-track {
