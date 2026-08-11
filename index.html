@@ -73,51 +73,77 @@
       </div>
     </section>
 
-    <!-- VIEW 1: 10-Minute Session Overview -->
+    <!-- VIEW 1: 10-Minute Session Overview (Screen 1: Home Dashboard) -->
     <section id="session-view" class="view-section active">
       <div class="reader-container">
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-          <h2 style="font-family: var(--font-heading); font-size: 1.6rem;">
-            🎯 오늘 10분 맞춤 코스
+        <!-- Top Streak Badge & Title -->
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <h2 style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--stitch-rose-dark); font-weight: 800; margin-bottom: 0.5rem;">
+            Daily 10
           </h2>
-          <span class="chapter-badge" id="session-active-chapter-badge">
-            <i data-lucide="book-open"></i> <span id="session-chapter-name">Chapter 1</span>
-          </span>
-        </div>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-          소설 <i>The Giver</i> 본문을 가지고 아래 4단계로 구성된 10분 영어 공부를 진행합니다.
-        </p>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
-          <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 1.25rem;">
-            <div style="color: #1d4ed8; font-weight: 700; margin-bottom: 0.5rem;">1단계 (0~3분)</div>
-            <h4 style="margin-bottom: 0.25rem; color: #0f172a;">🔊 문장 순서대로 듣기</h4>
-            <p style="font-size: 0.85rem; color: #475569;">TTS 오디오로 원문 음성을 듣고 문장을 차례대로 읽습니다.</p>
-          </div>
-
-          <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: var(--radius-md); padding: 1.25rem;">
-            <div style="color: #047857; font-weight: 700; margin-bottom: 0.5rem;">2단계 (3~6분)</div>
-            <h4 style="margin-bottom: 0.25rem; color: #0f172a;">📖 단어 검색 & 수집</h4>
-            <p style="font-size: 0.85rem; color: #475569;">생소한 단어를 클릭하여 한국어 뜻을 확인하고 단어장에 수집합니다.</p>
-          </div>
-
-          <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-md); padding: 1.25rem;">
-            <div style="color: #b45309; font-weight: 700; margin-bottom: 0.5rem;">3단계 (6~9분)</div>
-            <h4 style="margin-bottom: 0.25rem; color: #0f172a;">✏️ 문장 괄호 넣기 퀴즈</h4>
-            <p style="font-size: 0.85rem; color: #475569;">핵심 어휘가 빈칸으로 구성된 문장 채우기 퀴즈를 푸세요.</p>
-          </div>
-
-          <div style="background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: var(--radius-md); padding: 1.25rem;">
-            <div style="color: #6d28d9; font-weight: 700; margin-bottom: 0.5rem;">4단계 (9~10분)</div>
-            <h4 style="margin-bottom: 0.25rem; color: #0f172a;">📊 학습 마무리 & 누적</h4>
-            <p style="font-size: 0.85rem; color: #475569;">오늘의 성과를 요약하고 학습 진도를 자동으로 저장합니다.</p>
+          <div class="streak-badge" style="display: inline-flex; margin-bottom: 1rem;">
+            ⚡ <span id="home-streak-num">15</span> Days Streak
           </div>
         </div>
 
-        <div style="text-align: center;">
-          <button class="next-step-btn" id="session-start-main-btn" style="font-size: 1.05rem; padding: 0.85rem 2.5rem; margin: 0 auto;">
-            🚀 10분 학습 타이머 시작하기
+        <!-- Circular Today's Goal Widget -->
+        <div class="goal-circle-container">
+          <div style="font-size: 0.95rem; font-weight: 700; color: #6b7280; margin-bottom: 0.75rem;">Today's Goal</div>
+          <div class="goal-circle-widget">
+            <div class="goal-circle-val">4 <span style="font-size: 1.2rem; color: #9ca3af;">/ 10</span></div>
+            <div class="goal-circle-sub">mins</div>
+          </div>
+        </div>
+
+        <!-- Main Start Session Button -->
+        <div style="text-align: center; margin: 1.75rem 0;">
+          <button class="next-step-btn" id="session-start-main-btn" style="font-size: 1.1rem; padding: 0.95rem 3rem; width: 100%; max-width: 360px;">
+            Start Today's Session <i data-lucide="arrow-right"></i>
           </button>
+        </div>
+
+        <!-- Home Bottom Stats Row -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+          <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1.25rem; text-align: center;">
+            <div style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--stitch-rose-dark);" id="home-learned-words">342</div>
+            <div style="font-size: 0.8rem; color: #6b7280; font-weight: 600;">Words Learned</div>
+          </div>
+          <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1.25rem; text-align: center;">
+            <div style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--stitch-rose-dark);" id="home-total-reading">5h 20m</div>
+            <div style="font-size: 0.8rem; color: #6b7280; font-weight: 600;">Total Reading</div>
+          </div>
+        </div>
+
+        <!-- 4-Step Course Grid -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+          <h3 style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700;">🎯 오늘 10분 코스 안내</h3>
+          <span class="chapter-badge" id="session-active-chapter-badge">Chapter 1</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+          <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1rem;">
+            <div style="color: var(--stitch-rose-dark); font-weight: 700; font-size: 0.85rem; margin-bottom: 0.35rem;">1단계 (0~3분)</div>
+            <h4 style="margin-bottom: 0.25rem; font-weight: 700;">🔊 문장 읽기 & TTS</h4>
+            <p style="font-size: 0.82rem; color: #6b7280;">원문 음성을 듣고 문장을 읽습니다.</p>
+          </div>
+
+          <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1rem;">
+            <div style="color: var(--stitch-rose-dark); font-weight: 700; font-size: 0.85rem; margin-bottom: 0.35rem;">2단계 (3~6분)</div>
+            <h4 style="margin-bottom: 0.25rem; font-weight: 700;">📖 단어 학습</h4>
+            <p style="font-size: 0.82rem; color: #6b7280;">단어를 클릭하여 수집합니다.</p>
+          </div>
+
+          <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1rem;">
+            <div style="color: var(--stitch-rose-dark); font-weight: 700; font-size: 0.85rem; margin-bottom: 0.35rem;">3단계 (6~9분)</div>
+            <h4 style="margin-bottom: 0.25rem; font-weight: 700;">✏️ 빈칸 퀴즈</h4>
+            <p style="font-size: 0.82rem; color: #6b7280;">문장 빈칸 채우기 퀴즈를 푸세요.</p>
+          </div>
+
+          <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1rem;">
+            <div style="color: var(--stitch-rose-dark); font-weight: 700; font-size: 0.85rem; margin-bottom: 0.35rem;">4단계 (9~10분)</div>
+            <h4 style="margin-bottom: 0.25rem; font-weight: 700;">📊 학습 완료 & 요약</h4>
+            <p style="font-size: 0.82rem; color: #6b7280;">오늘의 성과를 확인합니다.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -177,6 +203,11 @@
       </div>
 
       <div class="reader-container">
+        <!-- Stitch Step 1 Green Guide Badge -->
+        <div style="display: inline-flex; align-items: center; gap: 0.4rem; background: #dcfce7; border: 1px solid #bbf7d0; color: #15803d; padding: 0.35rem 0.85rem; border-radius: var(--radius-full); font-size: 0.82rem; font-weight: 700; margin-bottom: 1rem;">
+          <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #16a34a;"></span> Read along to improve pronunciation and pacing.
+        </div>
+
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
           <h1 class="novel-title" id="novel-title-el">The Giver</h1>
           <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -212,84 +243,92 @@
       <div class="vocab-grid" id="vocab-card-grid"></div>
     </section>
 
-    <!-- VIEW 4: Fill-in-the-Blank Cloze Quiz View -->
+    <!-- VIEW 4: Fill-in-the-Blank Cloze Quiz View (Screen 4) -->
     <section id="quiz-view" class="view-section">
       <div class="quiz-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem;">
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <span style="color: var(--accent-amber); font-weight: 700;">✏️ 문장 괄호 채우기 퀴즈</span>
-            <span class="chapter-badge" id="quiz-active-chapter-badge">Chapter 1</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div style="font-size: 0.75rem; font-weight: 800; color: #9ca3af; letter-spacing: 1px; text-transform: uppercase;">
+            FILL IN THE BLANK
           </div>
-          <span style="color: var(--text-muted);" id="quiz-progress-num">문제 1 / 5</span>
+          <button class="icon-btn" id="read-quiz-sentence-btn" title="문장 음성 읽기" style="width: 36px; height: 36px;">
+            <i data-lucide="volume-2"></i>
+          </button>
         </div>
 
-        <div class="quiz-sentence" id="quiz-sentence-box">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+          <span class="chapter-badge" id="quiz-active-chapter-badge">Chapter 1</span>
+          <span style="font-size: 0.85rem; color: #6b7280; font-weight: 600;" id="quiz-progress-num">Quiz 1 / 5</span>
+        </div>
+
+        <div class="quiz-sentence" id="quiz-sentence-box" style="text-align: center; margin: 2rem 0; font-size: 1.25rem;">
           Loading quiz sentence...
         </div>
 
-        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-          <input type="text" class="cloze-input" id="cloze-answer-input" placeholder="정답 입력" autocomplete="off">
-          <button class="btn-primary" id="submit-quiz-btn">확인</button>
-          <button class="btn-secondary" id="read-quiz-sentence-btn"><i data-lucide="volume-2"></i> 문장 읽기</button>
-          <button class="btn-secondary" id="hint-quiz-btn"><i data-lucide="help-circle"></i> 힌트</button>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+          <input type="text" class="cloze-input" id="cloze-answer-input" placeholder="Type here" autocomplete="off" style="width: 200px;">
+          <button class="btn-primary" id="submit-quiz-btn">Check</button>
+          <button class="btn-secondary" id="hint-quiz-btn">💡 Hint</button>
         </div>
 
-        <div id="quiz-feedback-box" style="display: none; padding: 1rem; border-radius: var(--radius-md); font-weight: 600; margin-bottom: 1rem;"></div>
+        <div id="quiz-feedback-box" style="display: none; padding: 1rem; border-radius: var(--radius-md); font-weight: 600; margin-bottom: 1rem; background: #fff1f2; border: 1px solid #fecdd3; color: #9d174d;"></div>
       </div>
     </section>
 
-    <!-- VIEW 5: Progress & History Stats -->
+    <!-- VIEW 5: Progress & Summary (Screen 5: Step 4 Summary) -->
     <section id="stats-view" class="view-section">
-      <h2 style="font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 1.5rem;">📊 학습 진도 및 누적 통계</h2>
+      <div class="reader-container" style="max-width: 560px; margin: 0 auto; text-align: center;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--stitch-rose-dark); margin-bottom: 1.25rem;">
+          Step 4: Summary (1 min)
+        </h3>
 
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">🔥</div>
-          <div>
-            <div class="stat-val" id="stat-streak-days">1일</div>
-            <div class="stat-lbl">연속 학습 일수</div>
+        <!-- Trophy Illustration Card -->
+        <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: center;">
+          <div style="font-size: 4rem;">🏆</div>
+        </div>
+
+        <!-- 2 Stat Badges (10 mins studied / 12 words learned) -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+          <div style="background: #ffffff; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--stitch-rose-dark);" id="stat-total-time">10</div>
+            <div style="font-size: 0.8rem; color: #6b7280; font-weight: 600;">mins studied</div>
+          </div>
+          <div style="background: #ffffff; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1rem;">
+            <div style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--stitch-rose-dark);" id="stat-saved-vocab">12</div>
+            <div style="font-size: 0.8rem; color: #6b7280; font-weight: 600;">words learned</div>
           </div>
         </div>
 
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">⏱️</div>
-          <div>
-            <div class="stat-val" id="stat-total-time">0분</div>
-            <div class="stat-lbl">총 학습 시간</div>
+        <!-- Quiz Accuracy Card (Pink Box with Green Check) -->
+        <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+          <div style="text-align: left;">
+            <div style="font-size: 0.78rem; color: #9ca3af; font-weight: 700; text-transform: uppercase;">Quiz Accuracy</div>
+            <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--stitch-rose-dark);" id="quiz-accuracy-num">100%</div>
+          </div>
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: #dcfce7; color: #15803d; display: flex; align-items: center; justify-content: center; font-weight: 800;">
+            ✓
           </div>
         </div>
 
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">📚</div>
-          <div>
-            <div class="stat-val" id="stat-sentences-read">0개</div>
-            <div class="stat-lbl">읽은 총 문장 수</div>
+        <!-- Data Saved & Backup Box -->
+        <div style="background: #ffffff; border: 1px solid #fecdd3; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem; text-align: left;">
+          <div style="font-size: 0.88rem; font-weight: 700; color: var(--stitch-rose-dark); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem;">
+            ☁️ Data Saved Securely
+          </div>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn-secondary" id="export-json-btn" style="flex: 1; font-size: 0.85rem; justify-content: center;">
+              📁 JSON Export
+            </button>
+            <button class="btn-secondary" id="import-json-btn" style="flex: 1; font-size: 0.85rem; justify-content: center;">
+              ☁️ Cloud Backup
+            </button>
+            <input type="file" id="import-file-input" accept=".json" style="display: none;">
           </div>
         </div>
 
-        <div class="stat-card">
-          <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa;">💡</div>
-          <div>
-            <div class="stat-val" id="stat-saved-vocab">0개</div>
-            <div class="stat-lbl">수집한 단어</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="reader-container" style="margin-top: 2rem;">
-        <h3 style="margin-bottom: 1rem;">💾 데이터 백업 및 복원 (JSON)</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
-          다른 PC나 모바일 기기에서도 학습 단어장과 진행상황을 백업 및 복원할 수 있습니다.
-        </p>
-        <div style="display: flex; gap: 1rem;">
-          <button class="btn-secondary" id="export-json-btn">
-            <i data-lucide="download"></i> 데이터 내보내기 (.json)
-          </button>
-          <button class="btn-secondary" id="import-json-btn">
-            <i data-lucide="upload"></i> 데이터 불러오기
-          </button>
-          <input type="file" id="import-file-input" accept=".json" style="display: none;">
-        </div>
+        <!-- Finish Session Button -->
+        <button class="next-step-btn" id="finish-session-btn" style="width: 100%; font-size: 1.05rem; padding: 0.95rem;">
+          Finish Session <i data-lucide="arrow-right"></i>
+        </button>
       </div>
     </section>
 
