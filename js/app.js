@@ -283,10 +283,6 @@ class App {
     this.playCurrentSentenceAudio();
   }
 
-    const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
-    if (btn) btn.click();
-  }
-
   /* -------------------------------------------------------------
      Novel Reader & TTS Audio Controls
    ------------------------------------------------------------- */
@@ -882,7 +878,15 @@ class App {
   }
 }
 
-// Initialize on DOM Ready
-document.addEventListener('DOMContentLoaded', () => {
-  window.app = new App();
-});
+// Initialize on DOM Ready or immediately if ready
+const initApp = () => {
+  if (!window.app) {
+    window.app = new App();
+  }
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
