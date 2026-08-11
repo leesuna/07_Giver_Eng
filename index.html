@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Giver - 소설 기반 10분 일일 영어 학습</title>
+  <meta name="description" content="소설 원문을 기반으로 문장 읽기, TTS 연속 듣기, 팝업 단어장, 괄호 채우기 퀴즈로 구성된 매일 10분 맞춤 영어 학습 앱">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">
+        <i data-lucide="book-open"></i>
+      </div>
+      <span>The Giver Learner</span>
+    </div>
+
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="session-view">
+        <i data-lucide="timer"></i> 10분 루틴
+      </button>
+      <button class="tab-btn" data-tab="reader-view">
+        <i data-lucide="book-marked"></i> 소설 읽기
+      </button>
+      <button class="tab-btn" data-tab="vocab-view">
+        <i data-lucide="brain"></i> 내 단어장
+      </button>
+      <button class="tab-btn" data-tab="quiz-view">
+        <i data-lucide="pen-tool"></i> 괄호 퀴즈
+      </button>
+      <button class="tab-btn" data-tab="stats-view">
+        <i data-lucide="bar-chart-3"></i> 학습 기록
+      </button>
+    </nav>
+
+    <div class="header-actions">
+      <!-- Chapter Select Dropdown -->
+      <select class="chapter-select-box" id="header-chapter-select" title="학습 챕터 선택"></select>
+
+      <div class="streak-badge" id="streak-badge" title="연속 학습 일수">
+        <i data-lucide="flame"></i> <span id="streak-count">1</span>일 연속
+      </div>
+      <button class="btn-primary" id="start-session-btn">
+        <i data-lucide="play"></i> 10분 학습 시작
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="main-content">
+
+    <!-- 10-Minute Guided Timer Banner (Global across views when running) -->
+    <section class="timer-banner" id="timer-banner">
+      <div class="timer-header">
+        <div class="phase-info">
+          <h3 id="phase-title">
+            <i data-lucide="clock" style="color: var(--accent-cyan);"></i> 10분 가이드 학습 루틴
+          </h3>
+          <p id="phase-sub">시작 버튼을 눌러 오늘 10분 동안의 영어 학습을 진행하세요.</p>
+        </div>
+        <div class="timer-countdown" id="timer-display">10:00</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="timer-progress-bar"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 1: 10-Minute Session Overview -->
+    <section id="session-view" class="view-section active">
+      <div class="reader-container">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <h2 style="font-family: var(--font-heading); font-size: 1.6rem;">
+            🎯 오늘 10분 맞춤 코스
+          </h2>
+          <span class="chapter-badge" id="session-active-chapter-badge">
+            <i data-lucide="book-open"></i> <span id="session-chapter-name">Chapter 1</span>
+          </span>
+        </div>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+          소설 <i>The Giver</i> 본문을 가지고 아래 4단계로 구성된 10분 영어 공부를 진행합니다.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+          <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="color: var(--accent-blue); font-weight: 700; margin-bottom: 0.5rem;">1단계 (0~3분)</div>
+            <h4 style="margin-bottom: 0.25rem;">🔊 문장 순서대로 듣기</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">TTS 오디오로 원문 음성을 듣고 문장을 차례대로 읽습니다.</p>
+          </div>
+
+          <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="color: var(--accent-emerald); font-weight: 700; margin-bottom: 0.5rem;">2단계 (3~6분)</div>
+            <h4 style="margin-bottom: 0.25rem;">📖 단어 검색 & 수집</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">생소한 단어를 클릭하여 한국어 뜻을 확인하고 단어장에 수집합니다.</p>
+          </div>
+
+          <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="color: var(--accent-amber); font-weight: 700; margin-bottom: 0.5rem;">3단계 (6~9분)</div>
+            <h4 style="margin-bottom: 0.25rem;">✏️ 문장 괄호 넣기 퀴즈</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">핵심 어휘가 빈칸으로 구성된 문장 채우기 퀴즈를 푸세요.</p>
+          </div>
+
+          <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: var(--radius-md); padding: 1.25rem;">
+            <div style="color: var(--accent-purple); font-weight: 700; margin-bottom: 0.5rem;">4단계 (9~10분)</div>
+            <h4 style="margin-bottom: 0.25rem;">📊 학습 마무리 & 누적</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">오늘의 성과를 요약하고 학습 진도를 자동으로 저장합니다.</p>
+          </div>
+        </div>
+
+        <div style="text-align: center;">
+          <button class="btn-primary" id="session-start-main-btn" style="font-size: 1.1rem; padding: 0.85rem 2.5rem; margin: 0 auto;">
+            🚀 10분 학습 타이머 시작하기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: Novel Reader View -->
+    <section id="reader-view" class="view-section">
+      <!-- Floating TTS Audio Player Bar -->
+      <div class="audio-player-bar" id="floating-audio-bar">
+        <div class="player-controls">
+          <button class="icon-btn primary" id="play-pause-btn" title="재생 / 일시정지">
+            <i data-lucide="play"></i>
+          </button>
+          <button class="icon-btn" id="repeat-sentence-btn" title="현재 문장 반복 재생">
+            <i data-lucide="rotate-ccw"></i>
+          </button>
+          <button class="icon-btn" id="prev-sentence-btn" title="이전 문장">
+            <i data-lucide="skip-back"></i>
+          </button>
+          <button class="icon-btn" id="next-sentence-btn" title="다음 문장">
+            <i data-lucide="skip-forward"></i>
+          </button>
+          <button class="icon-btn" id="stop-audio-btn" title="정지">
+            <i data-lucide="square"></i>
+          </button>
+        </div>
+
+        <!-- Live Current Sentence Preview -->
+        <div class="playing-sentence-preview" id="playing-sentence-text" title="현재 읽고 있는 문장">
+          🔊 문장을 클릭하거나 재생 버튼을 누르세요.
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <!-- Font Size Adjuster -->
+          <div style="display: flex; align-items: center; gap: 0.25rem;">
+            <button class="icon-btn" id="font-decrease-btn" title="글자 크기 축소" style="width: 32px; height: 32px; font-weight: 700; font-size: 0.8rem;">A-</button>
+            <button class="icon-btn" id="font-increase-btn" title="글자 크기 확대" style="width: 32px; height: 32px; font-weight: 700; font-size: 0.8rem;">A+</button>
+          </div>
+
+          <!-- Speed Select -->
+          <select class="speed-select" id="tts-speed-select" title="재생 속도">
+            <option value="0.75">0.75x (느림)</option>
+            <option value="1.0" selected>1.0x (보통)</option>
+            <option value="1.25">1.25x (빠름)</option>
+            <option value="1.5">1.5x (매우 빠름)</option>
+          </select>
+
+          <!-- Auto Advance Toggle -->
+          <button class="toggle-pill active" id="auto-advance-toggle" title="다음 문장 자동 이동 ON/OFF">
+            <i data-lucide="repeat"></i> 연속 재생 ON
+          </button>
+
+          <!-- Chapter Loop Toggle -->
+          <button class="toggle-pill" id="chapter-loop-toggle" title="현재 선택된 챕터 무한 반복 재생">
+            <i data-lucide="refresh-cw"></i> 🔁 챕터 반복 OFF
+          </button>
+        </div>
+      </div>
+
+      <div class="reader-container">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+          <h1 class="novel-title" id="novel-title-el">The Giver</h1>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">챕터 선택:</label>
+            <select class="chapter-select-box" id="reader-chapter-select" style="font-size: 1rem; padding: 0.5rem 1rem;"></select>
+          </div>
+        </div>
+        <div class="novel-meta" style="margin-bottom: 0.75rem;">
+          <span>By Lois Lowry</span> • 
+          <span id="current-pos-text">문장 위치: 1 / 20</span>
+        </div>
+        <div id="chapter-desc-box" style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid var(--accent-blue); padding: 0.6rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; font-size: 0.88rem; color: #93c5fd;">
+          <i data-lucide="info" style="width: 16px; height: 16px; display: inline-block; vertical-align: text-top; margin-right: 0.25rem;"></i>
+          <span id="chapter-desc-text">12월이 다가오며 무언가 두려운 느낌을 받는 조나스...</span>
+        </div>
+
+        <!-- Novel Sentences Content Container -->
+        <div id="novel-body-container"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: Vocabulary Book View -->
+    <section id="vocab-view" class="view-section">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+        <h2 style="font-family: var(--font-heading); font-size: 1.6rem;">📖 나만의 단어장 (<span id="vocab-count-num">0</span>)</h2>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-secondary" id="filter-all-btn">전체</button>
+          <button class="btn-secondary" id="filter-review-btn">복습 필요</button>
+          <button class="btn-secondary" id="filter-mastered-btn">암기 완료</button>
+        </div>
+      </div>
+
+      <div class="vocab-grid" id="vocab-card-grid"></div>
+    </section>
+
+    <!-- VIEW 4: Fill-in-the-Blank Cloze Quiz View -->
+    <section id="quiz-view" class="view-section">
+      <div class="quiz-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="color: var(--accent-amber); font-weight: 700;">✏️ 문장 괄호 채우기 퀴즈</span>
+            <span class="chapter-badge" id="quiz-active-chapter-badge">Chapter 1</span>
+          </div>
+          <span style="color: var(--text-muted);" id="quiz-progress-num">문제 1 / 5</span>
+        </div>
+
+        <div class="quiz-sentence" id="quiz-sentence-box">
+          Loading quiz sentence...
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+          <input type="text" class="cloze-input" id="cloze-answer-input" placeholder="정답 입력" autocomplete="off">
+          <button class="btn-primary" id="submit-quiz-btn">확인</button>
+          <button class="btn-secondary" id="read-quiz-sentence-btn"><i data-lucide="volume-2"></i> 문장 읽기</button>
+          <button class="btn-secondary" id="hint-quiz-btn"><i data-lucide="help-circle"></i> 힌트</button>
+        </div>
+
+        <div id="quiz-feedback-box" style="display: none; padding: 1rem; border-radius: var(--radius-md); font-weight: 600; margin-bottom: 1rem;"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: Progress & History Stats -->
+    <section id="stats-view" class="view-section">
+      <h2 style="font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 1.5rem;">📊 학습 진도 및 누적 통계</h2>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">🔥</div>
+          <div>
+            <div class="stat-val" id="stat-streak-days">1일</div>
+            <div class="stat-lbl">연속 학습 일수</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">⏱️</div>
+          <div>
+            <div class="stat-val" id="stat-total-time">0분</div>
+            <div class="stat-lbl">총 학습 시간</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">📚</div>
+          <div>
+            <div class="stat-val" id="stat-sentences-read">0개</div>
+            <div class="stat-lbl">읽은 총 문장 수</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15); color: #a78bfa;">💡</div>
+          <div>
+            <div class="stat-val" id="stat-saved-vocab">0개</div>
+            <div class="stat-lbl">수집한 단어</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reader-container" style="margin-top: 2rem;">
+        <h3 style="margin-bottom: 1rem;">💾 데이터 백업 및 복원 (JSON)</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+          다른 PC나 모바일 기기에서도 학습 단어장과 진행상황을 백업 및 복원할 수 있습니다.
+        </p>
+        <div style="display: flex; gap: 1rem;">
+          <button class="btn-secondary" id="export-json-btn">
+            <i data-lucide="download"></i> 데이터 내보내기 (.json)
+          </button>
+          <button class="btn-secondary" id="import-json-btn">
+            <i data-lucide="upload"></i> 데이터 불러오기
+          </button>
+          <input type="file" id="import-file-input" accept=".json" style="display: none;">
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Word Definition Modal Popover -->
+  <div class="modal-overlay" id="word-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="word-title" id="modal-word-title">Word</span>
+          <span class="word-phonetic" id="modal-word-phonetic">/phonetic/</span>
+        </div>
+        <button class="icon-btn" id="modal-audio-btn" title="발음 듣기">
+          <i data-lucide="volume-2"></i>
+        </button>
+      </div>
+
+      <div class="word-meaning" id="modal-word-meaning">한국어 뜻</div>
+      <div class="word-context" id="modal-word-context">Sentence example context...</div>
+
+      <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+        <button class="btn-secondary" id="modal-close-btn">닫기</button>
+        <button class="btn-primary" id="modal-save-vocab-btn">⭐ 단어장에 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript Controller -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
